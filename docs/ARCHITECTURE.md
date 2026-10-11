@@ -128,7 +128,8 @@ against simple baselines before making predictive claims.
 - `GET /competitions/{competition_id}/seasons/{season_id}/teams`: available teams.
 - The same scoped path plus `/teams/{team_id}/metrics` or
   `/teams/{team_id}/tactical-profile`: raw metrics or scored profiles.
-- Comparison and simulation endpoints remain planned, not implemented.
+- `GET /compare` compares independently normalized competition-season profiles; see [COMPARISON.md](COMPARISON.md).
+- Simulation endpoints remain planned, not implemented.
 
 See `API.md` for response models, errors, offline preparation, and the server-owned
 coverage manifest. Default request handling never downloads data. Uncached resources

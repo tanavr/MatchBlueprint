@@ -5,6 +5,7 @@ from typing import Literal, Optional
 from pydantic import Field
 
 from app.models.football import Record
+from app.models.metrics import Metric
 
 
 class TacticalConfig(Record):
@@ -42,3 +43,4 @@ class TacticalProfile(Record):
     config: TacticalConfig
     expected_matches: dict[str, int]
     limitations: list[str]
+    raw_metrics: dict[str, Metric] = Field(default_factory=dict)

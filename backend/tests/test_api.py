@@ -212,3 +212,63 @@ def test_offline_cache_hit(tmp_path: Path) -> None:
     assert offline.read("competitions.json") == original
     with pytest.raises(ValueError):
         CachedJSONSource(tmp_path, offline=True, refresh=True)
+
+
+def comparison_params() -> dict[str, str]:
+    return {"competition_a": "fixture:competition:1", "season_a": "fixture:season:1",
+            "team_a": "fixture:team:1", "competition_b": "fixture:competition:1",
+            "season_b": "fixture:season:1", "team_b": "fixture:team:2"}
+
+
+def test_comparison_endpoint_and_shared_cohort() -> None:
+    calls = Counter()
+    class CountingProvider(FixtureFootballDataProvider):
+        def get_match_events(self, match_id: str) -> list[Event]:
+            calls[match_id] += 1
+            return super().get_match_events(match_id)
+    with TestClient(create_app(CountingProvider(), [coverage()])) as client:
+        response = client.get("/compare", params=comparison_params())
+        assert response.status_code == 200
+        body = response.json()
+        assert body["raw_metric_differences"]["goals_for_per_match"]["difference_a_minus_b"] == 1
+        assert body["team_a"]["data_kind"] == "sample"
+        assert body["team_b"]["team_id"] == "fixture:team:2"
+        assert body["team_a_advantages"] == body["team_b_advantages"] == []
+        assert all(d["difference_a_minus_b"] is None for d in body["tactical_score_comparison"].values())
+        schema = client.get("/openapi.json").json()
+        assert schema["paths"]["/compare"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["$ref"].endswith("TeamComparison")
+    assert calls == {"fixture:match:1": 1}
+
+
+@pytest.mark.parametrize("field,value,status", [("team_b", "unknown", 404), ("season_b", "unknown", 404),
+                                               ("competition_b", "unknown", 404), ("team_a", "bad id", 422)])
+def test_comparison_validation(client: TestClient, field: str, value: str, status: int) -> None:
+    params = comparison_params()
+    params[field] = value
+    assert client.get("/compare", params=params).status_code == status
+
+
+def test_comparison_requires_scope_and_review(client: TestClient) -> None:
+    assert client.get("/compare", params={"team_a": "fixture:team:1"}).status_code == 422
+    with TestClient(create_app(FixtureFootballDataProvider())) as unreviewed:
+        assert unreviewed.get("/compare", params=comparison_params()).status_code == 409
+
+
+def test_comparison_across_seasons() -> None:
+    class TwoSeasons(FixtureFootballDataProvider):
+        def get_seasons(self, competition: str) -> list[Season]:
+            seasons = super().get_seasons(competition)
+            return seasons + [seasons[0].model_copy(update={"id": "fixture:season:2"})]
+
+        def get_matches(self, competition: str, season: Season) -> list[Match]:
+            self.validate_season(competition, season)
+            return [self._match.model_copy(update={"season_id": season.id})]
+
+    params = comparison_params()
+    params["season_b"] = "fixture:season:2"
+    manifests = [coverage(), coverage().model_copy(update={"season_id": "fixture:season:2"})]
+    with TestClient(create_app(TwoSeasons(), manifests)) as client:
+        response = client.get("/compare", params=params)
+    assert response.status_code == 200
+    assert response.json()["team_a"]["season_id"] == "fixture:season:1"
+    assert response.json()["team_b"]["season_id"] == "fixture:season:2"

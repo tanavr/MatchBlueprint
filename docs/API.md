@@ -18,6 +18,7 @@ Let `B = /competitions/{competition_id}/seasons/{season_id}`.
 
 | Path | Response model | Purpose |
 | --- | --- | --- |
+| `/compare` | `TeamComparison` | Raw context, own-season normalized differences and style observations |
 | `/health` | `HealthResponse` | Process liveness; does not download or check football data |
 | `/competitions` | `CompetitionList` | Source competition catalog |
 | `/competitions/{competition_id}/seasons` | `SeasonList` | Seasons within a competition |
@@ -174,3 +175,45 @@ Tests inject `FixtureFootballDataProvider` through `create_app(provider, coverag
 `get_service` can also be overridden using FastAPI dependencies. No mutable global
 test provider is shared with the default app. Run `python -m pytest` from `backend/`;
 all tests block external HTTP.
+
+## Compare teams across seasons
+
+`GET /compare` returns `TeamComparison`. Supply all six query parameters:
+`competition_a`, `season_a`, `team_a`, `competition_b`, `season_b`, `team_b`.
+Competition scope is required on each side; season IDs alone are ambiguous.
+Identifiers use the same format rules as route IDs. For example:
+
+```bash
+curl --get http://127.0.0.1:8000/compare \
+  --data-urlencode 'competition_a=fixture:competition:1' \
+  --data-urlencode 'season_a=fixture:season:1' \
+  --data-urlencode 'team_a=fixture:team:1' \
+  --data-urlencode 'competition_b=fixture:competition:1' \
+  --data-urlencode 'season_b=fixture:season:1' \
+  --data-urlencode 'team_b=fixture:team:2'
+```
+
+This uses sample IDs and needs the synthetic coverage entry shown above with the
+fixture provider. The unconfigured demo returns 409. For real requests, substitute
+discovered IDs and prepare/review both seasons as described above. Small cohorts
+return 200 with explicit null comparisons; they do not acquire scores just because
+two teams were selected.
+
+The result contains `team_a` and `team_b` profiles (including raw metrics),
+`raw_metric_differences`, `normalized_metric_differences`,
+`tactical_score_comparison`, `team_a_advantages`, `team_b_advantages`, `similarities`,
+`matchup_observations`, and `limitations`. A difference entry has this shape:
+
+```json
+{"team_a": 90, "team_b": 60, "difference_a_minus_b": 30,
+ "unit": "percentile points", "basis": "component_percentile", "reason": null}
+```
+
+These numbers illustrate the schema. Positive differences mean A is higher.
+Advantages describe relative style, not winning probability. Unavailable
+comparisons have a null delta and explanatory reason. Raw differences never drive
+cross-season conclusions. See [COMPARISON.md](COMPARISON.md) for formulas and limits.
+
+The usual 404/422/502/503 errors apply to either side. Missing/stale coverage returns
+409 `coverage_not_verified`; incompatible profile sources, versions or configurations
+return 409 `incompatible_profiles`. No analytics are calculated in the route handler.

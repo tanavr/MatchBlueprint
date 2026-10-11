@@ -103,10 +103,10 @@ backend/
     main.py       FastAPI application and local CORS configuration
     api/          HTTP routes and error mapping
     services/     Provider and analytics orchestration
-    analytics/    Reserved for analytical functions
+    analytics/    Raw metrics, tactical scores, and cross-season comparisons
     data/         Provider interface, StatsBomb adapter, cache, and fixtures
     models/       Pydantic schemas
-  tests/          Health and CORS tests
+  tests/          Provider, analytics, API, health, and CORS tests
   pyproject.toml  Python dependencies and pytest configuration
 frontend/
   src/            React landing page and styles
@@ -118,3 +118,7 @@ See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for the planned design and
 [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines. Frontend setup uses
 [Vite](https://vite.dev/guide/). Analytics and chart dependencies will be added when
 those features are implemented.
+
+Cross-season comparisons are available through `GET /compare`. See
+[API.md](docs/API.md) for request parameters and coverage requirements, and
+[COMPARISON.md](docs/COMPARISON.md) for normalization and interpretation rules.

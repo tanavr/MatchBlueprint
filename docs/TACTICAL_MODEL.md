@@ -167,7 +167,9 @@ component values, component percentiles, eligible team IDs, target match IDs,
 excluded teams/reasons, constant components, and an interpretation/proxy flag.
 The profile carries competition-season, source and real/sample status, raw/model
 versions, configuration, and expected match counts. Input profiles are not modified.
-The full raw profiles must be retained by the caller for source hashes/provenance.
+Tactical profiles now retain raw metric records in `raw_metrics` for comparisons.
+The full raw season profiles must still be retained by the caller for source hashes/provenance.
+See [COMPARISON.md](COMPARISON.md) for cross-season difference rules.
 The API integration and reviewed coverage configuration are documented in
 [API.md](API.md). Frontend integration remains pending.
 

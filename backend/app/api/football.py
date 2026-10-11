@@ -1,6 +1,7 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Path, Request
+from fastapi import APIRouter, Depends, Path, Query, Request
+from app.models.comparison import TeamComparison
 
 from app.models.api import CompetitionList, ErrorResponse, SeasonList, TeamList
 from app.models.metrics import TeamSeasonProfile
@@ -10,15 +11,23 @@ from app.services.football import FootballService
 router = APIRouter(tags=["football"], responses={
     code: {"model": ErrorResponse, "description": description}
     for code, description in {
-        404: "Unknown or unavailable resource", 409: "Coverage requires review",
+        404: "Unknown or unavailable resource", 409: "Coverage or profile compatibility conflict",
         422: "Invalid request parameters", 502: "Invalid source data", 503: "Data source unavailable",
     }.items()
 })
 Identifier = Annotated[str, Path(min_length=1, max_length=128, pattern=r"^[A-Za-z0-9][A-Za-z0-9:_-]*$")]
+QueryIdentifier = Annotated[str, Query(min_length=1, max_length=128, pattern=r"^[A-Za-z0-9][A-Za-z0-9:_-]*$")]
 
 
 def get_service(request: Request) -> FootballService:
     return request.app.state.football_service
+
+
+@router.get("/compare", response_model=TeamComparison)
+def compare(competition_a: QueryIdentifier, season_a: QueryIdentifier, team_a: QueryIdentifier,
+            competition_b: QueryIdentifier, season_b: QueryIdentifier, team_b: QueryIdentifier,
+            service: FootballService = Depends(get_service)) -> TeamComparison:
+    return service.compare(competition_a, season_a, team_a, competition_b, season_b, team_b)
 
 
 @router.get("/competitions", response_model=CompetitionList)

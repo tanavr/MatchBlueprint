@@ -5,6 +5,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from app.analytics.tactical import TacticalInputError
+from app.analytics.comparison import ComparisonInputError
 from app.analytics.team_season import MetricsInputError
 from app.data.provider import DataFormatError, DataNotFoundError, DataNotPreparedError, DataProviderError
 from app.models.api import ErrorInfo, ErrorResponse
@@ -17,6 +18,8 @@ def register_errors(app: FastAPI) -> None:
             status, code, message = 404, "not_found", "Requested competition, season, team, or event resource is unavailable."
         elif isinstance(exc, CoverageConflictError):
             status, code, message = 409, "coverage_not_verified", str(exc)
+        elif isinstance(exc, ComparisonInputError):
+            status, code, message = 409, "incompatible_profiles", str(exc)
         elif isinstance(exc, (DataFormatError, MetricsInputError, TacticalInputError)):
             status, code, message = 502, "invalid_source_data", "Source records are invalid or incompatible; review the prepared dataset."
         elif isinstance(exc, DataNotPreparedError):
@@ -26,7 +29,7 @@ def register_errors(app: FastAPI) -> None:
         body = ErrorResponse(error=ErrorInfo(code=code, message=message))
         return JSONResponse(status_code=status, content=body.model_dump())
 
-    for error in (DataProviderError, CoverageConflictError, MetricsInputError, TacticalInputError):
+    for error in (DataProviderError, CoverageConflictError, MetricsInputError, TacticalInputError, ComparisonInputError):
         app.add_exception_handler(error, provider_error)
 
     async def validation_error(request: Request, exc: RequestValidationError) -> JSONResponse:

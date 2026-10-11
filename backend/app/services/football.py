@@ -1,9 +1,11 @@
 from typing import Optional, Sequence
 
+from app.analytics.comparison import TeamComparisonEngine
 from app.analytics.tactical import TacticalStyleModel
 from app.analytics.team_season import TeamSeasonMetrics
 from app.data.provider import DataNotFoundError, FootballDataProvider
 from app.models.api import CompetitionList, SeasonCoverage, SeasonList, TeamList
+from app.models.comparison import TeamComparison
 from app.models.football import Match, Season
 from app.models.metrics import MatchEvents, TeamSeasonProfile
 from app.models.tactical import TacticalProfile
@@ -74,6 +76,27 @@ class FootballService:
         return TeamSeasonMetrics.calculate(team_id, season, selected, self._feeds(selected, coverage))
 
     def tactical_profile(self, competition_id: str, season_id: str, team_id: str) -> TacticalProfile:
+        cohort, expected = self._tactical_inputs(competition_id, season_id, team_id)
+        return TacticalStyleModel().score(team_id, cohort, expected)
+
+    def compare(self, competition_a: str, season_a: str, team_a: str,
+                competition_b: str, season_b: str, team_b: str) -> TeamComparison:
+        # Reuse the cohort within this request when both teams share a season.
+        inputs = {}
+        profiles = []
+        for competition, season, team in ((competition_a, season_a, team_a),
+                                          (competition_b, season_b, team_b)):
+            scope = (competition, season)
+            if scope not in inputs:
+                inputs[scope] = self._tactical_inputs(competition, season, team)
+            cohort, expected = inputs[scope]
+            if team not in {p.team_id for p in cohort}:
+                raise DataNotFoundError("Team is not present in this competition-season's available matches")
+            profiles.append(TacticalStyleModel().score(team, cohort, expected))
+        return TeamComparisonEngine.compare(*profiles)
+
+    def _tactical_inputs(self, competition_id: str, season_id: str, team_id: str
+                         ) -> tuple[list[TeamSeasonProfile], dict[str, int]]:
         season, matches, coverage = self._context(competition_id, season_id, team_id)
         if coverage is None or not coverage.expected_matches:
             raise CoverageConflictError("Tactical scoring requires a reviewed full roster and expected completed-match counts")
@@ -88,4 +111,4 @@ class FootballService:
                 raise CoverageConflictError("Observed match count exceeds the reviewed expected count")
             selected_feeds = {m.id: feeds[m.id] for m in selected if m.id in feeds}
             cohort.append(TeamSeasonMetrics.calculate(team, season, selected, selected_feeds))
-        return TacticalStyleModel().score(team_id, cohort, coverage.expected_matches)
+        return cohort, coverage.expected_matches

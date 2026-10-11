@@ -216,7 +216,8 @@ class TacticalStyleModel:
         return TacticalProfile(
             team_id=team_id, competition_id=target.competition_id, season_id=target.season_id,
             metrics_version=target.metrics_version, source=source, data_kind=kind,
-            scores=scores, primary_identity=identity, secondary_traits=traits, explanation=explanation,
+            scores=scores, raw_metrics=target.metrics, primary_identity=identity,
+            secondary_traits=traits, explanation=explanation,
             config=self.config, expected_matches=dict(sorted(expected_matches.items())), limitations=[
                 "Relative style within the supplied competition-season, not strength or win probability.",
                 "Expected-match counts and the full roster must be independently verified by the caller.",
