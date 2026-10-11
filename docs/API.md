@@ -18,6 +18,7 @@ Let `B = /competitions/{competition_id}/seasons/{season_id}`.
 
 | Path | Response model | Purpose |
 | --- | --- | --- |
+| `/simulate` | `MatchSimulation` | Neutral-venue analytical goal and outcome probabilities |
 | `/compare` | `TeamComparison` | Raw context, own-season normalized differences and style observations |
 | `/health` | `HealthResponse` | Process liveness; does not download or check football data |
 | `/competitions` | `CompetitionList` | Source competition catalog |
@@ -217,3 +218,35 @@ cross-season conclusions. See [COMPARISON.md](COMPARISON.md) for formulas and li
 The usual 404/422/502/503 errors apply to either side. Missing/stale coverage returns
 409 `coverage_not_verified`; incompatible profile sources, versions or configurations
 return 409 `incompatible_profiles`. No analytics are calculated in the route handler.
+
+
+## Simulate a hypothetical matchup
+
+`GET /simulate` takes the same six required identifiers as `/compare`:
+`competition_a`, `season_a`, `team_a`, `competition_b`, `season_b`, `team_b`.
+An optional `seed` is an integer from 0 to 4294967295. The analytical method is
+reproducible without randomness: seed is echoed and `seed_used` is false.
+
+For example, use the `/compare` curl command above with `/simulate` as the path and
+optionally append `--data-urlencode 'seed=42'`. The tiny sample fixture cannot meet
+the 10-match minimum and returns 409, even with its coverage entry. Real requests
+require both full reviewed season score datasets, not just event data for selected
+clubs. Events are not fetched. The service checks reviewed match hashes as usual.
+
+The `MatchSimulation` result includes:
+
+- `expected_goals_a`, `expected_goals_b`: Poisson means from goal rates, not shot xG.
+- `team_a_win_probability`, `draw_probability`, `team_b_win_probability`: fractions
+  from 0 to 1, summing to one; multiply by 100 to display percentages.
+- `most_likely_scorelines`: up to five `{goals_a, goals_b, probability}` entries.
+- `average_simulated_score`: `{team_a, team_b}`, the exact analytical means.
+- `team_a`, `team_b`: rate inputs, own-season baselines, strength ratios, provenance.
+- Reference scoring baseline, neutral venue, source `data_kind`, model version,
+  seed metadata, truncation cutoffs/mass, explanation and limitations.
+
+Unknown identifiers return 404, invalid identifiers/seeds or missing parameters 422.
+Absent/stale review metadata returns 409 `coverage_not_verified`. Incomplete scores,
+small samples, incompatible sources/designations or unsupported numerical inputs
+return 409 `simulation_unavailable`. Existing 502/503 provider errors still apply.
+There is no automatic fallback to fixture data or an invented season average.
+See [SIMULATION.md](SIMULATION.md) for the formulas, assumptions and limitations.

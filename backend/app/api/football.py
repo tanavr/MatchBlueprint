@@ -1,7 +1,8 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, Path, Query, Request
 from app.models.comparison import TeamComparison
+from app.models.simulation import MatchSimulation
 
 from app.models.api import CompetitionList, ErrorResponse, SeasonList, TeamList
 from app.models.metrics import TeamSeasonProfile
@@ -21,6 +22,14 @@ QueryIdentifier = Annotated[str, Query(min_length=1, max_length=128, pattern=r"^
 
 def get_service(request: Request) -> FootballService:
     return request.app.state.football_service
+
+
+@router.get("/simulate", response_model=MatchSimulation)
+def simulate(competition_a: QueryIdentifier, season_a: QueryIdentifier, team_a: QueryIdentifier,
+             competition_b: QueryIdentifier, season_b: QueryIdentifier, team_b: QueryIdentifier,
+             seed: Annotated[Optional[int], Query(ge=0, le=4294967295)] = None,
+             service: FootballService = Depends(get_service)) -> MatchSimulation:
+    return service.simulate(competition_a, season_a, team_a, competition_b, season_b, team_b, seed)
 
 
 @router.get("/compare", response_model=TeamComparison)

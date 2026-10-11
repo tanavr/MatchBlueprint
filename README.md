@@ -103,7 +103,7 @@ backend/
     main.py       FastAPI application and local CORS configuration
     api/          HTTP routes and error mapping
     services/     Provider and analytics orchestration
-    analytics/    Raw metrics, tactical scores, and cross-season comparisons
+    analytics/    Raw metrics, tactical scores, comparisons, and simulation
     data/         Provider interface, StatsBomb adapter, cache, and fixtures
     models/       Pydantic schemas
   tests/          Provider, analytics, API, health, and CORS tests
@@ -122,3 +122,6 @@ those features are implemented.
 Cross-season comparisons are available through `GET /compare`. See
 [API.md](docs/API.md) for request parameters and coverage requirements, and
 [COMPARISON.md](docs/COMPARISON.md) for normalization and interpretation rules.
+
+Hypothetical neutral-venue matchups are available through `GET /simulate`.
+See [SIMULATION.md](docs/SIMULATION.md) for the Poisson model and evidence requirements.

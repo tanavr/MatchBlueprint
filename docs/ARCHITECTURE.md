@@ -6,8 +6,8 @@ The project has a React landing page and a FastAPI health endpoint. This documen
 describes the planned analytical features. The data-provider layer is implemented
 (see `DATA.md`), as are raw team-season metrics (see `METRICS.md`) and interpretable
 tactical scores/labels (see `TACTICAL_MODEL.md`). The API exposes these layers through
-`FootballService` (see `API.md`). Match simulations and frontend integration of
-these analytics are not implemented yet.
+`FootballService` (see `API.md`). Cross-season comparisons and the analytical Poisson simulator are implemented
+(see `COMPARISON.md` and `SIMULATION.md`). Frontend integration remains pending.
 
 The application will let a user select a club and season, inspect seven tactical
 traits and their explanations, compare two club-seasons, and simulate a hypothetical
@@ -129,7 +129,7 @@ against simple baselines before making predictive claims.
 - The same scoped path plus `/teams/{team_id}/metrics` or
   `/teams/{team_id}/tactical-profile`: raw metrics or scored profiles.
 - `GET /compare` compares independently normalized competition-season profiles; see [COMPARISON.md](COMPARISON.md).
-- Simulation endpoints remain planned, not implemented.
+- `GET /simulate` returns an explainable neutral-venue Poisson scenario; see [SIMULATION.md](SIMULATION.md).
 
 See `API.md` for response models, errors, offline preparation, and the server-owned
 coverage manifest. Default request handling never downloads data. Uncached resources

@@ -1,6 +1,8 @@
 from typing import Optional, Sequence
 
 from app.analytics.comparison import TeamComparisonEngine
+from app.analytics.simulation import MatchSimulator
+from app.models.simulation import MatchSimulation
 from app.analytics.tactical import TacticalStyleModel
 from app.analytics.team_season import TeamSeasonMetrics
 from app.data.provider import DataNotFoundError, FootballDataProvider
@@ -78,6 +80,24 @@ class FootballService:
     def tactical_profile(self, competition_id: str, season_id: str, team_id: str) -> TacticalProfile:
         cohort, expected = self._tactical_inputs(competition_id, season_id, team_id)
         return TacticalStyleModel().score(team_id, cohort, expected)
+
+    def simulate(self, competition_a: str, season_a: str, team_a: str,
+                 competition_b: str, season_b: str, team_b: str,
+                 seed: Optional[int] = None) -> MatchSimulation:
+        contexts = {}
+        inputs = []
+        for competition, season, team in ((competition_a, season_a, team_a),
+                                          (competition_b, season_b, team_b)):
+            scope = (competition, season)
+            if scope not in contexts:
+                contexts[scope] = self._context(competition, season, team)
+            _, matches, coverage = contexts[scope]
+            if not any(team in {m.home_team.id, m.away_team.id} for m in matches):
+                raise DataNotFoundError("Team is not present in this competition-season")
+            if coverage is None or not coverage.expected_matches:
+                raise CoverageConflictError("Simulation requires a reviewed full roster and expected match counts")
+            inputs.append((team, matches, coverage.expected_matches))
+        return MatchSimulator.simulate(*inputs[0], *inputs[1], seed=seed)
 
     def compare(self, competition_a: str, season_a: str, team_a: str,
                 competition_b: str, season_b: str, team_b: str) -> TeamComparison:
