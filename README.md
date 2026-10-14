@@ -109,7 +109,7 @@ backend/
   tests/          Provider, analytics, API, health, and CORS tests
   pyproject.toml  Python dependencies and pytest configuration
 frontend/
-  src/            React landing page and styles
+  src/            Dashboard pages, reusable components, API client, and styles
   package.json    Frontend dependencies and commands
 docs/             Architecture and metric plans
 ```
@@ -125,3 +125,42 @@ Cross-season comparisons are available through `GET /compare`. See
 
 Hypothetical neutral-venue matchups are available through `GET /simulate`.
 See [SIMULATION.md](docs/SIMULATION.md) for the Poisson model and evidence requirements.
+
+
+## Analyze dashboard
+
+With the backend running on port 8000, start the frontend from a second terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open http://localhost:5173, then choose a competition, season, and team and click
+**Analyze team**. Results come from FastAPI; the frontend never substitutes invented
+analytics. The default backend needs locally prepared data and reviewed coverage;
+see [API.md](docs/API.md). A missing cache produces an explanatory error.
+
+For an offline sample walkthrough, run this instead of the normal backend:
+
+```bash
+cd backend
+source .venv/bin/activate
+python -m uvicorn app.main:create_demo_app --factory --host 127.0.0.1 --port 8000
+```
+
+Choose **Sample League → Sample Season → Sample North**. Expect a sample-data
+badge, goals for/against, unavailable event statistics, and a tactical-coverage
+message. This deliberately tiny fixture cannot produce a scored tactical identity.
+A complete numeric report requires a prepared, reviewed season meeting scoring
+thresholds; coverage must not be invented to make a demo look complete.
+
+The frontend API client defaults to http://127.0.0.1:8000. To use another local port:
+`VITE_API_BASE_URL=http://127.0.0.1:8001 npm run dev` from `frontend/`.
+Vite variables are public configuration, never secrets. Restart Vite after changes.
+The backend permits the existing localhost and 127.0.0.1 frontend origins on 5173.
+
+Analyze and About Model are implemented. Compare and Simulate navigation currently
+shows clearly labeled planned interfaces. See [DASHBOARD.md](docs/DASHBOARD.md) for
+component organization and a manual verification checklist.
