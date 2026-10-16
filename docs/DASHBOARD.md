@@ -2,8 +2,8 @@
 
 The React application provides a responsive navy/charcoal workspace with a restrained
 green accent, hash navigation, and an integrated Analyze page. About Model explains
-the assumptions. Compare and Simulate have explicit planned-interface states; this
-stage does not implement their forms or result screens.
+the assumptions. Compare now provides independent selectors and a complete result
+view. Simulate retains an explicit planned-interface state.
 
 ## Structure
 
@@ -58,7 +58,7 @@ separate visible feedback. Analyze is disabled until selection is complete.
    mobile without horizontal scrolling. Navigate using keyboard Tab/Enter; check
    visible focus, labels, disclosures, skip link, and active navigation state.
 7. Open About Model, Compare, and Simulate; verify their content and use browser
-   Back/Forward to navigate. Compare/Simulate must not suggest completed tools.
+   Back/Forward to navigate. Simulate must not suggest a completed interface.
 
 ## Verification for this stage
 
@@ -70,3 +70,62 @@ separate visible feedback. Analyze is disabled until selection is complete.
   synthetic event test provider, selection reset, and desktop/mobile layout.
   The temporary QA provider uses real analytics code and is not shipped as product
   data. These checks do not validate football prediction accuracy.
+
+
+## Compare experience
+
+`pages/Compare.jsx` owns both submitted selections and the abortable comparison
+request. `ComparisonPicker` instances have independent catalog state and unique
+accessible labels. Changing either selection clears results and cancels the old
+request; changing a competition/season resets only that side's dependent choices.
+The centralized API client encodes all six identifiers for `GET /compare`.
+
+Reusable components under `components/comparison/` render the team headers,
+Recharts radar, metric/category tables, strongest differences, similarities and
+matchup observations. The chart code loads only when Compare is opened. Identities,
+statistical values, differences and explanations all come from the backend; no
+frontend analytical model or sample-result fallback is added.
+
+The radar has seven fixed dimensions and a fixed 0–100 axis with 25-point ticks,
+with green solid A and blue dashed B outlines, legends and tooltips. Short axis
+labels are expanded in the caption and category table. Keyboard arrow navigation
+also exposes the tooltip. Exact numeric values remain available in a semantic
+HTML table, so the chart is not the only way to access the information.
+
+To avoid closing a polygon through invented zeroes or silently changing the axes,
+the radar requires all seven differences to be comparable. Missing/constant or
+incompatible-reference dimensions yield an explicit explanation; available values
+remain in tables. Category emphasis describes the backend delta's direction, not
+a win advantage. Strongest differences use the backend's qualified advantage lists
+rather than reranking raw cross-season numbers. Normalized and raw metric modes
+are visibly distinct; unavailable differences retain reasons and raw coverage is
+inspectable. Tables scroll within their cards at narrow viewport widths.
+
+### Compare manual checks
+
+1. Start frontend and backend per README, with prepared and reviewed season data.
+   Open Compare, choose each side independently and submit. Check both names,
+   seasons, identities and sample/source badges match the selections.
+2. Compare the same team-season to itself: all comparable deltas should be zero,
+   no strongest advantages should be shown, and radar shapes should overlap.
+3. Compare contrasting profiles. Hover the chart or focus it and press arrow keys;
+   tooltip values must match the category table and the axis must remain 0–100.
+4. Toggle Season percentiles / Raw metrics. Units, description, values and
+   differences must switch together. Missing values display dashes, real zeroes
+   display 0.0, and excluded reference comparisons carry reasons.
+5. Change Team A's competition or season. A's dependent selections and the report
+   clear, B stays selected, and Compare is disabled until A is complete again.
+6. A missing coverage manifest (including the default tiny demo) should produce
+   an explanatory error with retry. Insufficient metric evidence in an otherwise
+   accepted comparison should suppress the radar without hiding available tables.
+7. Check desktop and a 390px viewport. Cards stack and the page does not overflow;
+   wide tables have their own keyboard-focusable horizontal scrolling areas.
+
+Verification: frontend production build, three Node display-rule tests (null/zero,
+reference exclusions, signed deltas), and all 189 backend tests pass. Browser QA
+with existing clearly labeled synthetic profiles passed the independent selection
+and submission flow, two contrasting identities, radar rendering with all axis
+ticks, keyboard tooltip values, and the 390px layout after fixing table-induced
+page overflow. The temporary test server used the real scoring/comparison engines;
+its test fixtures were not added to frontend product data. Raw-mode interaction and selector-reset behavior are included in the manual
+checklist above; they were code-reviewed but not browser-verified in this stage.

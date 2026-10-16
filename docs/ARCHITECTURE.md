@@ -7,8 +7,8 @@ describes the planned analytical features. The data-provider layer is implemente
 (see `DATA.md`), as are raw team-season metrics (see `METRICS.md`) and interpretable
 tactical scores/labels (see `TACTICAL_MODEL.md`). The API exposes these layers through
 `FootballService` (see `API.md`). Cross-season comparisons and the analytical Poisson simulator are implemented
-(see `COMPARISON.md` and `SIMULATION.md`). The React Analyze dashboard is integrated; comparison and simulation interfaces
-remain pending. See `DASHBOARD.md` for UI structure and manual checks.
+(see `COMPARISON.md` and `SIMULATION.md`). The React Analyze and Compare dashboards are integrated; the simulation interface
+remains pending. See `DASHBOARD.md` for UI structure and manual checks.
 
 The application will let a user select a club and season, inspect seven tactical
 traits and their explanations, compare two club-seasons, and simulate a hypothetical

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import Analyze from './pages/Analyze'
 import About from './pages/About'
+const Compare = lazy(() => import('./pages/Compare'))
 
 const pages = { analyze: 'Analyze', compare: 'Compare', simulate: 'Simulate', about: 'About Model' }
 const currentPage = () => Object.hasOwn(pages, location.hash.slice(1)) ? location.hash.slice(1) : 'analyze'
@@ -22,7 +23,7 @@ export default function App() {
       <div className="sidebar-note"><span className="status-dot" />Transparent by design<p>Football analysis with the assumptions in view.</p><span className="version">RESEARCH WORKSPACE / V1</span></div>
     </aside>
     <div className="workspace"><header className="topbar"><span>Workspace <span className="breadcrumb">/</span> <strong>{pages[page]}</strong></span><span className="topbar-note">MatchBlueprint</span></header>
-      <main id="main-content" tabIndex="-1">{page === 'analyze' ? <Analyze /> : page === 'about' ? <About /> : <><div className="page-heading"><p className="eyebrow">{pages[page]}</p><h1>{page === 'compare' ? 'Two teams. Different approaches.' : 'Explore the hypothetical.'}</h1><p>{page === 'compare' ? 'Compare tactical profiles across clubs, leagues, and seasons.' : 'Explainable goal estimates and match outcome probabilities.'}</p></div><section className="panel coming-soon"><span className="badge">Interface planned</span><h2>{pages[page]} workspace</h2><p>The backend supports this feature. Its dedicated dashboard is a future step; team analysis is ready to explore now.</p><a className="primary-button" href="#analyze">Analyze a team →</a></section></>}</main>
+      <main id="main-content" tabIndex="-1">{page === 'analyze' ? <Analyze /> : page === 'compare' ? <Suspense fallback={<p role="status">Loading comparison workspace…</p>}><Compare /></Suspense> : page === 'about' ? <About /> : <><div className="page-heading"><p className="eyebrow">{pages[page]}</p><h1>{page === 'compare' ? 'Two teams. Different approaches.' : 'Explore the hypothetical.'}</h1><p>{page === 'compare' ? 'Compare tactical profiles across clubs, leagues, and seasons.' : 'Explainable goal estimates and match outcome probabilities.'}</p></div><section className="panel coming-soon"><span className="badge">Interface planned</span><h2>{pages[page]} workspace</h2><p>The backend supports this feature. Its dedicated dashboard is a future step; team analysis is ready to explore now.</p><a className="primary-button" href="#analyze">Analyze a team →</a></section></>}</main>
       <footer><span>MatchBlueprint</span><span>Relative style. Transparent context.</span></footer>
     </div>
   </div>

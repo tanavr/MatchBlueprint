@@ -1,14 +1,14 @@
-# Football Tactical Analyzer
+# MatchBlueprint
 
 Analyze, compare, and simulate football teams across seasons.
 
-The current scaffold includes a React landing page and a FastAPI backend with
-`GET /health`. Analyze Team, Compare Teams, and Match Simulator are placeholders.
-The website does not display football data, analytics, or simulation results yet.
+The React dashboard includes working Analyze and Compare experiences backed by
+FastAPI. The simulation API is implemented; its frontend screen remains planned.
+Real analytics require prepared data and reviewed season coverage.
 
 The backend now includes a modular data layer for public StatsBomb JSON and a
 synthetic offline fixture provider. API endpoints expose discovery and analytics;
-the frontend remains a landing page.
+the frontend displays season profiles and team comparisons.
 See [DATA.md](docs/DATA.md) for usage, available competitions/seasons, caching, and
 coverage limitations. Downloaded data stays in the ignored `data/cache/` directory.
 
@@ -161,6 +161,23 @@ The frontend API client defaults to http://127.0.0.1:8000. To use another local 
 Vite variables are public configuration, never secrets. Restart Vite after changes.
 The backend permits the existing localhost and 127.0.0.1 frontend origins on 5173.
 
-Analyze and About Model are implemented. Compare and Simulate navigation currently
-shows clearly labeled planned interfaces. See [DASHBOARD.md](docs/DASHBOARD.md) for
+Analyze, Compare, and About Model are implemented. Simulate currently shows a
+clearly labeled planned interface. See [DASHBOARD.md](docs/DASHBOARD.md) for
 component organization and a manual verification checklist.
+
+
+## Compare two teams
+
+Open **Compare** and independently select a competition, season and team on each
+side, then click **Compare teams**. Results include both identities, a Recharts
+radar, category differences, raw/normalized metric tables, similarities, and
+matchup observations from the API. The chart always uses seven fixed axes and
+0–100; if any dimension cannot be compared, an explanation replaces the radar
+while the available table values remain visible. Raw differences are context,
+not cross-league strength estimates.
+
+Both seasons need reviewed coverage. The tiny default demo does not satisfy this
+requirement and will show an honest coverage error, not fabricated results.
+See [DASHBOARD.md](docs/DASHBOARD.md) for comparison verification steps.
+
+Frontend display-rule tests: `npm --prefix frontend test`.
