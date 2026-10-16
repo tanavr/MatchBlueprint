@@ -19,7 +19,9 @@ class CoverageConflictError(ValueError):
 
 class FootballService:
     def __init__(self, provider: FootballDataProvider,
-                 coverage: Sequence[SeasonCoverage] = ()) -> None:
+                 coverage: Sequence[SeasonCoverage] = (), *,
+                 prepared_profiles: Optional[dict[tuple[str, str], list[TeamSeasonProfile]]] = None) -> None:
+        self.prepared_profiles = prepared_profiles or {}
         self.provider = provider
         self.coverage = {(c.competition_id, c.season_id): c for c in coverage}
         if len(self.coverage) != len(coverage):
@@ -74,6 +76,9 @@ class FootballService:
 
     def metrics(self, competition_id: str, season_id: str, team_id: str) -> TeamSeasonProfile:
         season, matches, coverage = self._context(competition_id, season_id, team_id)
+        prepared = self.prepared_profiles.get((competition_id, season_id))
+        if prepared is not None:
+            return next(p for p in prepared if p.team_id == team_id)
         selected = [m for m in matches if team_id in {m.home_team.id, m.away_team.id}]
         return TeamSeasonMetrics.calculate(team_id, season, selected, self._feeds(selected, coverage))
 
@@ -120,6 +125,9 @@ class FootballService:
         season, matches, coverage = self._context(competition_id, season_id, team_id)
         if coverage is None or not coverage.expected_matches:
             raise CoverageConflictError("Tactical scoring requires a reviewed full roster and expected completed-match counts")
+        prepared = self.prepared_profiles.get((competition_id, season_id))
+        if prepared is not None:
+            return prepared, coverage.expected_matches
         teams = sorted({t.id for m in matches for t in (m.home_team, m.away_team)})
         if not set(teams) <= set(coverage.expected_matches):
             raise CoverageConflictError("Reviewed roster does not include all observed teams")

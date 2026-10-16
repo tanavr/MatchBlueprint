@@ -250,3 +250,11 @@ small samples, incompatible sources/designations or unsupported numerical inputs
 return 409 `simulation_unavailable`. Existing 502/503 provider errors still apply.
 There is no automatic fallback to fixture data or an invented season average.
 See [SIMULATION.md](SIMULATION.md) for the formulas, assumptions and limitations.
+
+## Prepared real-data serving
+
+See [REAL_DATA.md](REAL_DATA.md) for the reproducible Premier League demo.
+`python -m app.data.prepare_demo` builds a validated local snapshot; the default
+app loads its precomputed raw profiles and exposes only prepared scopes. Scoring
+and simulation remain in the existing analytics engines. `GET /dataset` reports
+loaded seasons, club/match counts and real/sample provenance.

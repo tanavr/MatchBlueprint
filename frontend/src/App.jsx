@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import Analyze from './pages/Analyze'
 import About from './pages/About'
+import DatasetBanner from './components/DatasetBanner'
 const Simulate = lazy(() => import('./pages/Simulate'))
 const Compare = lazy(() => import('./pages/Compare'))
 
@@ -24,7 +25,7 @@ export default function App() {
       <div className="sidebar-note"><span className="status-dot" />Transparent by design<p>Football analysis with the assumptions in view.</p><span className="version">RESEARCH WORKSPACE / V1</span></div>
     </aside>
     <div className="workspace"><header className="topbar"><span>Workspace <span className="breadcrumb">/</span> <strong>{pages[page]}</strong></span><span className="topbar-note">MatchBlueprint</span></header>
-      <main id="main-content" tabIndex="-1">{page === 'analyze' ? <Analyze /> : page === 'compare' ? <Suspense fallback={<p role="status">Loading comparison workspace…</p>}><Compare /></Suspense> : page === 'about' ? <About /> : <Suspense fallback={<p role="status">Loading simulator…</p>}><Simulate /></Suspense>}</main>
+      <main id="main-content" tabIndex="-1"><DatasetBanner />{page === 'analyze' ? <Analyze /> : page === 'compare' ? <Suspense fallback={<p role="status">Loading comparison workspace…</p>}><Compare /></Suspense> : page === 'about' ? <About /> : <Suspense fallback={<p role="status">Loading simulator…</p>}><Simulate /></Suspense>}</main>
       <footer><span>MatchBlueprint</span><span>Relative style. Transparent context.</span></footer>
     </div>
   </div>

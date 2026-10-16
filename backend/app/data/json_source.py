@@ -15,7 +15,7 @@ from app.data.provider import DataCacheError, DataFormatError, DataNetworkError,
 from app.models.football import Provenance
 from app.data.provider import DataNotPreparedError
 
-DEFAULT_CACHE = Path(__file__).resolve().parents[4] / "data" / "cache" / "statsbomb"
+DEFAULT_CACHE = Path(__file__).resolve().parents[3] / "data" / "cache" / "statsbomb"
 
 
 class CachedJSONSource:

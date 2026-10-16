@@ -33,6 +33,7 @@ function matchup(endpoint, a, b, signal) {
   return get(`/${endpoint}?${query}`, signal)
 }
 export const api = {
+  dataset: signal => get("/dataset", signal),
   compare: (a, b, signal) => matchup('compare', a, b, signal),
   simulate: (a, b, signal) => matchup('simulate', a, b, signal),
   competitions: signal => get('/competitions', signal),

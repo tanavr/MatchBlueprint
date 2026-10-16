@@ -181,3 +181,11 @@ The event adapter now also exposes optional normalized pass completion/endpoints
 shot xG, possession identity/owner, counter tags, tackle classification, and an
 explicit coordinate convention. These semantic fields allow analytics to avoid
 reading provider-specific `source_fields`. Their missing-data rules are in METRICS.md.
+
+## Prepared real-data serving
+
+See [REAL_DATA.md](REAL_DATA.md) for the reproducible Premier League demo.
+`python -m app.data.prepare_demo` builds a validated local snapshot; the default
+app loads its precomputed raw profiles and exposes only prepared scopes. Scoring
+and simulation remain in the existing analytics engines. `GET /dataset` reports
+loaded seasons, club/match counts and real/sample provenance.

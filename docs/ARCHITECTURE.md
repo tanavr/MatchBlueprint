@@ -167,3 +167,11 @@ Never commit secrets, `.env` files, dependencies, virtual environments, or large
 datasets. Keep collection output ignored and review fixture size and rights before
 tracking it. Current scaffold checks cover the health endpoint, local-development
 CORS behavior, and the frontend production build, alongside whitespace checks.
+
+## Prepared real-data serving
+
+See [REAL_DATA.md](REAL_DATA.md) for the reproducible Premier League demo.
+`python -m app.data.prepare_demo` builds a validated local snapshot; the default
+app loads its precomputed raw profiles and exposes only prepared scopes. Scoring
+and simulation remain in the existing analytics engines. `GET /dataset` reports
+loaded seasons, club/match counts and real/sample provenance.

@@ -1041,3 +1041,7 @@ footer {
   .simulation-results .panel { padding: 20px 16px; }
   .simulation-results .section-heading { align-items: flex-start; flex-direction: column; }
 }
+
+.dataset-banner { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.5rem; padding: 1rem 1.25rem; margin-bottom: 1.5rem; border: 1px solid #315548; border-radius: 10px; background: #14251f; font-size: .8rem; color: #b7c8c0; }
+.dataset-banner strong { color: #8bdbb2; }
+.dataset-banner a { color: #b7c8c0; margin-left: auto; }

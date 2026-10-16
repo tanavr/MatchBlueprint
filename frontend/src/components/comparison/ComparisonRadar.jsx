@@ -1,4 +1,4 @@
-import { Legend, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts'
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend, PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts'
 import { dimensionLabels } from '../TacticalScores'
 import { comparable, number } from './presentation'
 
@@ -26,9 +26,23 @@ export default function ComparisonRadar({ comparison, labels }) {
   return <section className="panel comparison-radar" aria-labelledby="radar-title">
     <div className="section-heading"><div><p className="eyebrow">The shape of their game</p><h2 id="radar-title">Tactical overlay</h2></div><span className="badge">Fixed scale · 0–100</span></div>
     <p className="muted">Seven dimensions. Each team measured against its own season peers.</p>
-    {unavailable.length ? <div className="radar-unavailable" role="status"><h3>Not enough comparable evidence</h3><p>The radar needs all seven comparable dimensions. Missing values are never drawn as zero.</p><p>Unavailable: {unavailable.map(row => row.fullLabel).join(', ')}.</p><a className="text-link" href="#category-comparison" onClick={event => {
-      event.preventDefault(); document.getElementById('category-comparison')?.focus()
-    }}>Read the available categories below ↓</a></div> : <>
+    {unavailable.length ? <>
+      <p className="muted">Showing {rows.length - unavailable.length} comparable dimensions. Unavailable: {unavailable.map(row => row.fullLabel).join(', ')}. Missing scores are not zero.</p>
+      {rows.some(row => comparable(comparison[row.key])) && <div className="radar-canvas" role="group" aria-label="Available tactical scores compared on a zero to one hundred scale">
+        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+          <BarChart data={rows.filter(row => comparable(comparison[row.key]))} layout="vertical" margin={{ top: 16, right: 24, bottom: 16, left: 4 }}>
+            <CartesianGrid stroke="#364552" horizontal={false} />
+            <XAxis type="number" domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} stroke="#9aaebc" />
+            <YAxis type="category" dataKey="label" width={76} stroke="#c6d3df" />
+            <Tooltip content={<RadarTooltip />} />
+            <Legend wrapperStyle={{ fontSize: 11 }} />
+            <Bar name={`A · ${labels.a}`} dataKey="a" fill="#8cdbaf" isAnimationActive={false} />
+            <Bar name={`B · ${labels.b}`} dataKey="b" fill="#8fbaff" isAnimationActive={false} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>}
+      <p className="chart-caption">Bars preserve available evidence when a complete seven-axis radar cannot be drawn. Exact values and missing-data reasons follow below.</p>
+    </> : <>
       <div className="radar-canvas" role="group" aria-label="Team A and Team B tactical radar on a fixed zero to one hundred scale. Exact values follow in the category table.">
         <ResponsiveContainer width="100%" height="100%" minWidth={0}>
           <RadarChart data={rows} outerRadius="64%" margin={{ top: 22, right: 32, bottom: 18, left: 32 }}>

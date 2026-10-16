@@ -2,31 +2,10 @@
 
 Analyze, compare, and simulate football teams across seasons.
 
-The React dashboard includes working Analyze, Compare, and Simulate experiences
-backed by FastAPI.
-Real analytics require prepared data and reviewed season coverage.
-
-The backend now includes a modular data layer for public StatsBomb JSON and a
-synthetic offline fixture provider. API endpoints expose discovery and analytics;
-the frontend displays season profiles and team comparisons.
-See [DATA.md](docs/DATA.md) for usage, available competitions/seasons, caching, and
-coverage limitations. Downloaded data stays in the ignored `data/cache/` directory.
-
-The raw `TeamSeasonMetrics` engine summarizes supplied match/event records in Python.
-See [METRICS.md](docs/METRICS.md) for formulas, usage, and missing-data rules. It does
-not itself assign tactical scores or labels and is not connected to the website.
-
-The separate `TacticalStyleModel` now ranks these metrics within a sufficiently
-covered competition-season cohort and produces rule-based descriptions. See
-[TACTICAL_MODEL.md](docs/TACTICAL_MODEL.md) for formulas, usage, synthetic examples,
-and proxy limitations. This scoring layer is also not connected to the website yet.
-
-See [API.md](docs/API.md) for the discovery, metrics, and tactical-profile endpoints,
-error formats, and coverage review configuration. The default API reads cached data
-only. Prepare the catalog separately with `python -m app.data.prepare` from the
-activated backend environment; requesting uncached data returns 503. Event metrics
-need reviewed feed coverage, and tactical scoring also needs reviewed roster counts.
-For an offline sample API, run `python -m uvicorn app.main:create_demo_app --factory`.
+The Analyze, Compare and Simulate dashboards use real StatsBomb Open Data.
+The initial demo covers the men's Premier League **2015/2016: 20 clubs and 380 matches**.
+Prepare the data once, then run the backend and frontend below. No API keys are needed.
+See [REAL_DATA.md](docs/REAL_DATA.md) for coverage checks, limitations and attribution.
 
 ## Requirements
 
@@ -44,6 +23,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e '.[dev]'
+python -m app.data.prepare_demo  # first run only; downloads and prepares real data
 python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
@@ -63,7 +43,7 @@ npm run dev
 ```
 
 Open <http://localhost:5173>. On subsequent runs, use `npm run dev`; rerun `npm ci`
-after dependency changes. The landing page does not call the backend yet.
+after dependency changes. All three dashboards call the backend.
 
 The API permits browser requests from `http://localhost:5173` and
 `http://127.0.0.1:5173`, following FastAPI's [CORS configuration](https://fastapi.tiangolo.com/tutorial/cors/).
@@ -116,8 +96,7 @@ docs/             Architecture and metric plans
 
 See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for the planned design and
 [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines. Frontend setup uses
-[Vite](https://vite.dev/guide/). Analytics and chart dependencies will be added when
-those features are implemented.
+[Vite](https://vite.dev/guide/). Analytics and chart dependencies are included.
 
 Cross-season comparisons are available through `GET /compare`. See
 [API.md](docs/API.md) for request parameters and coverage requirements, and
@@ -142,19 +121,10 @@ Open http://localhost:5173, then choose a competition, season, and team and clic
 analytics. The default backend needs locally prepared data and reviewed coverage;
 see [API.md](docs/API.md). A missing cache produces an explanatory error.
 
-For an offline sample walkthrough, run this instead of the normal backend:
-
-```bash
-cd backend
-source .venv/bin/activate
-python -m uvicorn app.main:create_demo_app --factory --host 127.0.0.1 --port 8000
-```
-
-Choose **Sample League → Sample Season → Sample North**. Expect a sample-data
-badge, goals for/against, unavailable event statistics, and a tactical-coverage
-message. This deliberately tiny fixture cannot produce a scored tactical identity.
-A complete numeric report requires a prepared, reviewed season meeting scoring
-thresholds; coverage must not be invented to make a demo look complete.
+Choose **Premier League → 2015/2016 → Arsenal** and analyze. The data banner
+should show 20 clubs and 380 matches. If an old backend is running with
+`create_demo_app --factory`, stop it and run `app.main:app` instead.
+The fixture factory remains available only for synthetic development checks.
 
 The frontend API client defaults to http://127.0.0.1:8000. To use another local port:
 `VITE_API_BASE_URL=http://127.0.0.1:8001 npm run dev` from `frontend/`.
@@ -171,12 +141,12 @@ Open **Compare** and independently select a competition, season and team on each
 side, then click **Compare teams**. Results include both identities, a Recharts
 radar, category differences, raw/normalized metric tables, similarities, and
 matchup observations from the API. The chart always uses seven fixed axes and
-0–100; if any dimension cannot be compared, an explanation replaces the radar
-while the available table values remain visible. Raw differences are context,
+0–100; if a dimension cannot be compared, a grouped bar chart shows supported dimensions
+and explains the omissions. Raw differences are context,
 not cross-league strength estimates.
 
-Both seasons need reviewed coverage. The tiny default demo does not satisfy this
-requirement and will show an honest coverage error, not fabricated results.
+The prepared Premier League season satisfies coverage requirements. Try Arsenal
+against Leicester City; additional seasons must be prepared before selection.
 See [DASHBOARD.md](docs/DASHBOARD.md) for comparison verification steps.
 
 Frontend display-rule tests: `npm --prefix frontend test`.
@@ -191,7 +161,6 @@ are score-model means, not shot-based xG. The analytical calculation is determin
 rerunning unchanged inputs does not introduce new randomness.
 
 Both season score datasets must be complete and independently reviewed, and each
-selected team needs at least 10 matches. The default tiny demo cannot meet these
-requirements and displays an explanatory error. No substitute predictions are
-invented. See [SIMULATION.md](docs/SIMULATION.md) for the mathematics and
+selected team needs at least 10 matches. The prepared real-data demo meets these requirements. No substitute predictions
+are invented. See [SIMULATION.md](docs/SIMULATION.md) for the mathematics and
 [DASHBOARD.md](docs/DASHBOARD.md) for manual UI checks.
