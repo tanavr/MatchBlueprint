@@ -169,8 +169,9 @@ bad user input. CORS remains limited to the two local port-5173 frontend origins
 checks review metadata, and calls the existing pure analytics modules. Tactical requests
 load each reviewed match's events once, then build team profiles for the available
 cohort. Calculations and provider I/O are synchronous route dependencies/handlers
-and run in FastAPI's thread pool. There is no persistent derived-profile cache yet;
-large prepared seasons can still take time and memory to calculate.
+and run in FastAPI's thread pool. The default prepared-data mode loads cached raw
+profiles from a validated local snapshot, so requests do not reprocess event files.
+The manual-coverage mode still calculates from events and can be expensive.
 
 Tests inject `FixtureFootballDataProvider` through `create_app(provider, coverage)`.
 `get_service` can also be overridden using FastAPI dependencies. No mutable global

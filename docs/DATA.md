@@ -18,7 +18,7 @@ match/event JSON array returns an empty list; a missing resource raises an error
 `StatsBombOpenDataProvider` maps public JSON into Pydantic models in
 `backend/app/models/football.py`. `CachedJSONSource` handles HTTP and disk caching
 separately from that mapping. Neither layer imports analytics or FastAPI. The
-API exposes these providers through a service layer; the frontend is not integrated.
+API exposes these providers through a service layer; the frontend uses these API endpoints.
 Default HTTP serving is cache-only; use `python -m app.data.prepare` for separate
 collection. See [API.md](API.md) for preparation and reviewed coverage requirements.
 
@@ -86,8 +86,8 @@ Schema-invalid raw JSON can be cached and will continue failing until refreshed.
 
 The default revision is `master`, which changes upstream. Pin a repository commit
 hash via `revision=...` for reproducible comparisons; a branch name and retrieval
-timestamp alone are not an immutable source version. There is no background sync,
-automatic retry, bulk season download, or cache eviction yet. Requests time out after
+timestamp alone are not an immutable source version. There is no background sync or cache eviction. The preparation command retries
+failed downloads up to three times and supports complete league downloads. Requests time out after
 30 seconds. Errors are subclasses of `DataProviderError`:
 
 | Error | Meaning |

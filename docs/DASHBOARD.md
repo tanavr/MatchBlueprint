@@ -94,8 +94,8 @@ HTML table, so the chart is not the only way to access the information.
 
 To avoid closing a polygon through invented zeroes or silently changing the axes,
 the radar requires all seven differences to be comparable. Missing/constant or
-incompatible-reference dimensions yield an explicit explanation; available values
-remain in tables. Category emphasis describes the backend delta's direction, not
+incompatible-reference dimensions yield an explicit explanation and a grouped
+0–100 bar chart for the supported dimensions; exact values remain in tables. Category emphasis describes the backend delta's direction, not
 a win advantage. Strongest differences use the backend's qualified advantage lists
 rather than reranking raw cross-season numbers. Normalized and raw metric modes
 are visibly distinct; unavailable differences retain reasons and raw coverage is

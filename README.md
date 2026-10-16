@@ -9,7 +9,7 @@ See [REAL_DATA.md](docs/REAL_DATA.md) for coverage checks, limitations and attri
 
 ## Requirements
 
-- Python 3.9 or newer (Python 3.12+ recommended for new installations)
+- Python 3.12 or newer (development checks run on Python 3.13)
 - Node.js 20.19+ or 22.12+ (Node.js 24 works) and npm
 - Two terminal windows, both starting in the repository root
 
@@ -19,7 +19,7 @@ See [REAL_DATA.md](docs/REAL_DATA.md) for coverage checks, limitations and attri
 
 ```bash
 cd backend
-python3 -m venv .venv
+python3.13 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e '.[dev]'
@@ -61,6 +61,7 @@ From the repository root, after installing dependencies:
 cd backend
 source .venv/bin/activate
 python -m pytest
+python -m ruff check app tests
 python -m pip check
 ```
 
@@ -68,6 +69,8 @@ In a separate terminal, from the repository root:
 
 ```bash
 cd frontend
+npm test
+npm run lint
 npm run build
 ```
 
@@ -164,3 +167,14 @@ Both season score datasets must be complete and independently reviewed, and each
 selected team needs at least 10 matches. The prepared real-data demo meets these requirements. No substitute predictions
 are invented. See [SIMULATION.md](docs/SIMULATION.md) for the mathematics and
 [DASHBOARD.md](docs/DASHBOARD.md) for manual UI checks.
+
+## Engineering checks
+
+The review and remaining improvements are recorded in [ENGINEERING_REVIEW.md](docs/ENGINEERING_REVIEW.md).
+Run `python -m pip_audit` in the backend environment and `npm audit` in `frontend/`
+to check dependencies against current advisories. These checks require internet access.
+The pytest suite itself remains offline.
+
+Existing Python 3.9 environments need to be recreated with Python 3.12 or newer
+before reinstalling `backend[dev]`. A virtual environment retains the Python version
+that created it; upgrading packages alone does not upgrade Python.

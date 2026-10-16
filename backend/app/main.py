@@ -23,7 +23,7 @@ def create_app(provider: Optional[FootballDataProvider] = None,
     application = FastAPI(title="Football Tactical Analyzer", version="0.2.0",
                           description="Cached football data, raw metrics, and evidence-qualified tactical profiles.")
     prepared_profiles = {}
-    if provider is None and "FOOTBALL_COVERAGE_PATH" not in os.environ:
+    if provider is None and coverage is None and "FOOTBALL_COVERAGE_PATH" not in os.environ:
         snapshot = Path(os.environ.get("FOOTBALL_PREPARED_PATH", str(DEFAULT_SNAPSHOT)))
         if snapshot.exists():
             dataset = PreparedDataset.model_validate_json(snapshot.read_text())

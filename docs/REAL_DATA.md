@@ -37,7 +37,9 @@ makes network calls to satisfy a browser request. Re-run preparation and restart
 the backend after changing metric formulas or replacing cached source files.
 An unsuccessful preparation leaves the previous snapshot intact. The snapshot is
 a trusted local build artifact, not an input to accept from anonymous uploaders.
-Schema, version, scope and roster consistency are checked when loading it; raw
+Schema, version, scope, roster, metric totals and provenance are checked when
+loading it. Goal metrics are checked against the saved match scores. Non-finite
+values, mixed real/sample records and inconsistent metric coverage are rejected; raw
 files are not reprocessed on every request. Original source hashes and retrieval
 timestamps remain in the profiles for auditability.
 
@@ -93,3 +95,9 @@ counter metrics. These can prevent passing/control and counterattacking scores
 from meeting the unchanged coverage thresholds. The comparison shows a grouped
 0–100 bar chart of supported dimensions when the seven-axis radar is unavailable.
 It never fills missing values with zero or relaxes statistical eligibility.
+
+Explicit `create_app(coverage=...)` arguments take precedence over the automatic
+prepared snapshot, including an empty list. Malformed snapshots fail at startup
+rather than serving inconsistent analytics. These checks detect internal
+inconsistencies; they do not authenticate a maliciously rewritten local artifact
+or recompute every event-derived statistic.
