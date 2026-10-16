@@ -12,7 +12,7 @@ export default function DatasetBanner() {
   }, [])
   if (!status) return null
   return <aside className="dataset-banner" aria-label="Available data">
-    {status.prepared ? <><strong>Prepared football data</strong>
+    {status.prepared ? <><strong>Demo</strong><span>Currently available: {status.seasons.map(item => `${item.competition} ${item.season}`).join(', ')} only.</span>
       {status.seasons.map(item => <span key={`${item.competition}-${item.season}`}>
         {item.data_kind === 'real' ? 'Real data' : 'Sample data'} · {item.competition} {item.season} · {item.teams} clubs · {item.matches} matches
       </span>)}<a href="https://github.com/statsbomb/open-data" target="_blank" rel="noreferrer">Data: StatsBomb Open Data ↗</a></>

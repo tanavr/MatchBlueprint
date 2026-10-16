@@ -39,11 +39,11 @@ export default function Simulate() {
   return <>
     <div className="page-heading"><p className="eyebrow">The hypothetical matchup</p><h1>Explore the possibilities.</h1><p>An explainable statistical scenario, grounded in each team’s season.</p></div>
     <form onSubmit={simulate}><div className="comparison-pickers"><ComparisonPicker side="A" onChange={selection => select('a', selection)} /><ComparisonPicker side="B" onChange={selection => select('b', selection)} /></div>
-      <div className="compare-action"><p>Neutral venue · Independent Poisson model<br /><span>A statistical hypothetical, not a guaranteed prediction.</span></p><button className="primary-button" disabled={!selections.a || !selections.b || busy}>{busy ? 'Calculating…' : 'Run Simulation'}</button></div>
+      <div className="compare-action"><p><span>A statistical hypothetical, not a guaranteed prediction.</span></p><button className="primary-button" disabled={!selections.a || !selections.b || busy}>{busy ? 'Calculating…' : 'Run Simulation'}</button></div>
     </form>
     {busy && <div className="panel loading-panel" role="status"><div className="loading-line" /><h2>Calculating the matchup</h2><p>Checking season coverage and calculating goal probabilities…</p></div>}
     {error && <Feedback error title="Simulation unavailable" onRetry={() => simulate()}>{error.message} {['coverage_not_verified', 'simulation_unavailable'].includes(error.code) && 'The model needs complete reviewed season scores and at least 10 matches for each selected team.'}</Feedback>}
-    {!busy && !error && !report && <section className="empty-panel"><p className="eyebrow">From strengths to probabilities</p><h2>What might the matchup look like?</h2><p>Select two club-seasons to estimate goals, explore possible scorelines and see the assumptions behind each probability.</p><div className="empty-features"><span>Neutral venue</span><span>Transparent calculations</span><span>Reproducible results</span></div></section>}
+    {!busy && !error && !report && <section className="empty-panel"><p className="eyebrow">From strengths to probabilities</p><h2>What might the matchup look like?</h2><p>Select two club-seasons to estimate goals, explore possible scorelines and see the assumptions behind each probability.</p></section>}
     {report && <SimulationResults {...report} />}
   </>
 }

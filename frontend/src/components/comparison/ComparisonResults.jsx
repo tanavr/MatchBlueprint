@@ -17,7 +17,7 @@ export default function ComparisonResults({ result, selections }) {
       </section>
     })}</div>
     <div className="comparison-visual-grid"><ComparisonRadar comparison={result.tactical_score_comparison} labels={labels} />
-      <section className="panel difference-panel"><p className="eyebrow">Where they diverge</p><h2>Strongest differences</h2><p className="muted">Largest backend-qualified leads of at least 10 points. These are stylistic advantages, not competitive ones.</p>
+      <section className="panel difference-panel"><p className="eyebrow">Where they diverge</p><h2>Strongest differences</h2><p className="muted">The biggest differences in playing style, with a gap of at least 10 points.</p>
         {['a', 'b'].map(side => <div className={`difference-group side-${side}`} key={side}><h3>Team {side.toUpperCase()} emphasis</h3>
           {result[`team_${side}_advantages`].length ? result[`team_${side}_advantages`].map(item => <div className="difference-item" key={item.category}><span>{dimensionLabels[item.category] || item.category}</span><strong>+{number(item.lead_points)}<small> pts</small></strong></div>) : <p className="empty-copy">No supported lead meets the threshold.</p>}
         </div>)}
@@ -27,6 +27,5 @@ export default function ComparisonResults({ result, selections }) {
     <div className="comparison-insights"><section className="panel"><p className="eyebrow">Common ground</p><h2>Similarities</h2><TextList items={result.similarities} empty="No supported similarities were identified." /></section>
       <section className="panel"><p className="eyebrow">Reading the matchup</p><h2>Style meets style</h2><TextList items={result.matchup_observations} empty="No supported matchup observations are available." /></section></div>
     <MetricTable result={result} />
-    <details className="panel limitations"><summary>Normalization & comparison limits</summary><TextList items={result.limitations} empty="No additional limitations supplied." /></details>
   </div>
 }

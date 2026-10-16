@@ -16,6 +16,5 @@ export default function AnalysisResults({ result, onRetry }) {
       </section>
       <section className="panel"><span className="eyebrow">Read with context</span><h2>What the scores mean</h2><p>A 75 places a trait toward the upper end of its eligible season cohort. It does not mean a 75% chance of winning.</p><p>Possession and pressing use event-based proxies. Missing evidence stays unavailable.</p><a className="text-link" href="#about">Explore the model →</a></section>
     </div></div>
-    <details className="panel limitations"><summary>Coverage & model limitations</summary><ul>{(tactical?.limitations || metrics?.notes || ['No analytical evidence is available.']).map(note => <li key={note}>{note}</li>)}</ul>{tactical && <p>Model {tactical.model_version} · Minimum {tactical.config.min_matches} matches and {tactical.config.min_teams} eligible teams.</p>}</details>
   </div>
 }

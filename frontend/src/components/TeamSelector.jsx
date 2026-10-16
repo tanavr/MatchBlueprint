@@ -25,7 +25,7 @@ export default function TeamSelector({ onAnalyze, onChange, busy }) {
   }
   const activeList = !competition ? catalog.competitions : !season ? catalog.seasons : catalog.teams
   return <section className="panel selector-panel" aria-labelledby="selection-title">
-    <div className="section-heading"><div><span className="eyebrow">Select your context</span><h2 id="selection-title">One team. One season.</h2></div><span className="muted">Source-driven selection</span></div>
+    <div className="section-heading"><div><span className="eyebrow">Select your context</span><h2 id="selection-title">Select a team and a season</h2></div><span className="muted">Source-driven selection</span></div>
     <form onSubmit={submit} className="selector-form">
       {fields.map(([key, label, value, options, disabled]) => <label key={key} htmlFor={`select-${key}`}>{label}
         <select id={`select-${key}`} value={value} disabled={disabled || catalog.loading} onChange={e => select(key, e.target.value)}>

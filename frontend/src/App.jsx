@@ -26,7 +26,7 @@ export default function App() {
     </aside>
     <div className="workspace"><header className="topbar"><span>Workspace <span className="breadcrumb">/</span> <strong>{pages[page]}</strong></span><span className="topbar-note">MatchBlueprint</span></header>
       <main id="main-content" tabIndex="-1"><DatasetBanner />{page === 'analyze' ? <Analyze /> : page === 'compare' ? <Suspense fallback={<p role="status">Loading comparison workspace…</p>}><Compare /></Suspense> : page === 'about' ? <About /> : <Suspense fallback={<p role="status">Loading simulator…</p>}><Simulate /></Suspense>}</main>
-      <footer><span>MatchBlueprint</span><span>Relative style. Transparent context.</span></footer>
+      <footer><span>MatchBlueprint</span></footer>
     </div>
   </div>
 }

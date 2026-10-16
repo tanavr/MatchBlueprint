@@ -36,6 +36,5 @@ export default function SimulationResults({ result, selections }) {
         ].map(([key, label, decimal]) => <tr key={key}><th scope="row">{label}</th>{['a', 'b'].map(side => <td key={side}>{decimal ? goals(result[`team_${side}`][key]) : result[`team_${side}`][key]}</td>)}</tr>)}</tbody>
       </table></div>
     </section>
-    <details className="panel limitations"><summary>Assumptions, limitations & reproducibility</summary><ul>{result.limitations.map((text, index) => <li key={index}>{text}</li>)}</ul><p>Model {result.model_version} · {result.method} · {result.venue} venue.</p><p>Calculated analytically: the same inputs give the same probabilities. No random seed is needed.</p><p>Omitted probability mass: {result.omitted_probability_mass.toExponential(2)}. Goal cutoffs: A {result.goal_cutoff_a}, B {result.goal_cutoff_b}.</p></details>
   </div>
 }

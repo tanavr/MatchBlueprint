@@ -43,7 +43,7 @@ export default function Compare() {
     </form>
     {busy && <div className="panel loading-panel" role="status"><div className="loading-line" /><h2>Comparing their approaches</h2><p>Building both profiles against their competition-season cohorts…</p></div>}
     {error && <Feedback error title="Comparison unavailable" onRetry={() => compare()}>{error.message} {error.code === 'coverage_not_verified' && 'Both seasons need reviewed coverage before a comparison can be made.'}</Feedback>}
-    {!busy && !error && !report && <section className="empty-panel"><p className="eyebrow">Find the contrasts</p><h2>A shared view of different styles.</h2><p>Select both teams to explore their tactical shapes, strongest differences, and common ground. All results come from the football API.</p><div className="empty-features"><span>Season-relative scores</span><span>Seven-dimension overlay</span><span>Evidence-led observations</span></div></section>}
+    {!busy && !error && !report && <section className="empty-panel"><p className="eyebrow">Find the contrasts</p><h2>A shared view of different styles.</h2><p>Select both teams to explore their tactical shapes, strongest differences, and common ground.</p></section>}
     {report && <ComparisonResults key={`${report.result.team_a.team_id}-${report.result.team_b.team_id}`} {...report} />}
   </>
 }
