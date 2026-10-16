@@ -3,7 +3,7 @@
 The React application provides a responsive navy/charcoal workspace with a restrained
 green accent, hash navigation, and an integrated Analyze page. About Model explains
 the assumptions. Compare now provides independent selectors and a complete result
-view. Simulate retains an explicit planned-interface state.
+view. Simulate provides an analytical matchup workflow with explicit uncertainty.
 
 ## Structure
 
@@ -58,7 +58,7 @@ separate visible feedback. Analyze is disabled until selection is complete.
    mobile without horizontal scrolling. Navigate using keyboard Tab/Enter; check
    visible focus, labels, disclosures, skip link, and active navigation state.
 7. Open About Model, Compare, and Simulate; verify their content and use browser
-   Back/Forward to navigate. Simulate must not suggest a completed interface.
+   Back/Forward to navigate. Each page should expose its own workflow and model context.
 
 ## Verification for this stage
 
@@ -129,3 +129,51 @@ ticks, keyboard tooltip values, and the 390px layout after fixing table-induced
 page overflow. The temporary test server used the real scoring/comparison engines;
 its test fixtures were not added to frontend product data. Raw-mode interaction and selector-reset behavior are included in the manual
 checklist above; they were code-reviewed but not browser-verified in this stage.
+
+
+## Match Simulator experience
+
+`pages/Simulate.jsx` reuses both `ComparisonPicker` instances. It calls the existing
+simulation endpoint through `api.simulate`, sharing URL encoding with Compare.
+Submitting disables repeated runs while loading. Changes to either team or navigation
+cancel the current request and clear stale results. Backend and connection errors
+have readable messages and a retry action; no client-side prediction fallback exists.
+
+`components/simulation/SimulationResults.jsx` displays both source/season headers,
+expected goals, most likely scorelines, analytical average score, strength inputs,
+backend explanations and limitations. `OutcomeProbabilities.jsx` displays A/draw/B
+cards and a proportional CSS bar on a fixed 0–100% scale, with a text alternative.
+It does not renormalize or reweight probabilities. Model-expected goals are clearly
+distinguished from shot xG; sample designations are prominent. The disclaimer appears
+both before running and in the result. There is no winner celebration or randomized
+match animation. Reproducibility follows the analytical backend, without a seed UI.
+
+`presentation.js` checks finite, bounded probabilities and a sum of one (tolerance
+1e-6), nonnegative means and valid scorelines before rendering. Invalid numeric
+responses become an error instead of a misleading probability chart. Formatting
+uses percentages to one decimal place and goals to two; displayed percentages may
+sum slightly differently due to rounding. The bar uses original unrounded values.
+The module is loaded separately when the Simulate page opens.
+
+### Simulator manual checks
+
+1. Start the app per README with complete reviewed season scores. Select both
+   teams independently and click Run Simulation. Check both names/seasons, expected
+   goals, all three outcomes, likely scorelines, model explanation and source badge.
+2. Confirm percentages correspond to the backend fractions times 100 and the bar
+   uses the same proportions. The top scoreline probabilities need not total 100%.
+3. Run the same inputs twice: results should be unchanged. Select the same team-season
+   on both sides: win probabilities should be symmetric, with a separate draw chance.
+4. Change a team while results are displayed or a request is pending. Old results
+   must disappear; changing A's selection must not reset B. Switch to another page
+   mid-request and confirm no stale report appears on return.
+5. Stop the backend and run again. Expect a connection error with retry. A tiny or
+   unreviewed season should instead show the backend's coverage/sample-size reason.
+6. Check a narrow mobile viewport and keyboard navigation. Probability cards and
+   scorelines remain readable; wide input tables scroll inside their own container.
+
+Validation includes eight frontend tests total (five new probability formatting and
+validation cases), 189 backend tests, and the production build. Browser checks used
+the existing synthetic scored-season provider through the real simulation endpoint:
+full successful report, same-team symmetry, result clearing on selection changes,
+and a 390px layout without page overflow. Temporary QA fixtures are not product data.

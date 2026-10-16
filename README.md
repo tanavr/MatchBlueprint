@@ -2,8 +2,8 @@
 
 Analyze, compare, and simulate football teams across seasons.
 
-The React dashboard includes working Analyze and Compare experiences backed by
-FastAPI. The simulation API is implemented; its frontend screen remains planned.
+The React dashboard includes working Analyze, Compare, and Simulate experiences
+backed by FastAPI.
 Real analytics require prepared data and reviewed season coverage.
 
 The backend now includes a modular data layer for public StatsBomb JSON and a
@@ -161,8 +161,7 @@ The frontend API client defaults to http://127.0.0.1:8000. To use another local 
 Vite variables are public configuration, never secrets. Restart Vite after changes.
 The backend permits the existing localhost and 127.0.0.1 frontend origins on 5173.
 
-Analyze, Compare, and About Model are implemented. Simulate currently shows a
-clearly labeled planned interface. See [DASHBOARD.md](docs/DASHBOARD.md) for
+Analyze, Compare, Simulate, and About Model are implemented. See [DASHBOARD.md](docs/DASHBOARD.md) for
 component organization and a manual verification checklist.
 
 
@@ -181,3 +180,18 @@ requirement and will show an honest coverage error, not fabricated results.
 See [DASHBOARD.md](docs/DASHBOARD.md) for comparison verification steps.
 
 Frontend display-rule tests: `npm --prefix frontend test`.
+
+
+## Run a hypothetical simulation
+
+Open **Simulate**, select both club-seasons, and click **Run Simulation**. The page
+uses `GET /simulate` and displays expected goals, win/draw/loss probabilities,
+likely scorelines, model inputs, explanations and limitations. Expected goals here
+are score-model means, not shot-based xG. The analytical calculation is deterministic;
+rerunning unchanged inputs does not introduce new randomness.
+
+Both season score datasets must be complete and independently reviewed, and each
+selected team needs at least 10 matches. The default tiny demo cannot meet these
+requirements and displays an explanatory error. No substitute predictions are
+invented. See [SIMULATION.md](docs/SIMULATION.md) for the mathematics and
+[DASHBOARD.md](docs/DASHBOARD.md) for manual UI checks.

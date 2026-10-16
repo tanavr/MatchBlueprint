@@ -46,5 +46,5 @@ See [the architecture plan](docs/ARCHITECTURE.md) for the proposed application d
 - Keep commits focused on one change or milestone and review the staged diff before
   committing.
 - Follow the implementation order in `docs/ARCHITECTURE.md`. The repository includes
-  data providers, raw metrics, tactical scoring, comparison, and simulation. The Analyze and Compare
-  dashboards are integrated; the simulation interface remains pending.
+  data providers, raw metrics, tactical scoring, comparison, and simulation. The Analyze, Compare, and Simulate
+  dashboards are integrated with the backend.

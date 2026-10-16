@@ -25,14 +25,16 @@ async function get(path, signal) {
   return body
 }
 const scope = (competition, season) => `/competitions/${encodeURIComponent(competition)}/seasons/${encodeURIComponent(season)}`
+function matchup(endpoint, a, b, signal) {
+  const query = new URLSearchParams({
+    competition_a: a.competition.id, season_a: a.season.id, team_a: a.team.id,
+    competition_b: b.competition.id, season_b: b.season.id, team_b: b.team.id,
+  })
+  return get(`/${endpoint}?${query}`, signal)
+}
 export const api = {
-  compare: (a, b, signal) => {
-    const query = new URLSearchParams({
-      competition_a: a.competition.id, season_a: a.season.id, team_a: a.team.id,
-      competition_b: b.competition.id, season_b: b.season.id, team_b: b.team.id,
-    })
-    return get(`/compare?${query}`, signal)
-  },
+  compare: (a, b, signal) => matchup('compare', a, b, signal),
+  simulate: (a, b, signal) => matchup('simulate', a, b, signal),
   competitions: signal => get('/competitions', signal),
   seasons: (competition, signal) => get(`/competitions/${encodeURIComponent(competition)}/seasons`, signal),
   teams: (competition, season, signal) => get(`${scope(competition, season)}/teams`, signal),

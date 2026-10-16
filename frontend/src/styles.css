@@ -997,3 +997,47 @@ footer {
   min-width: 0;
   max-width: 100%;
 }
+
+/* Analytical simulation: probabilities remain proportional on a fixed scale. */
+.simulation-results { grid-template-columns: minmax(0, 1fr); }
+.simulation-results > * { min-width: 0; max-width: 100%; }
+.simulation-disclaimer { color: #c1cec7; font-size: 12px; border-left: 2px solid var(--green); padding: 8px 18px; background: #15211c; }
+.expected-goals { display: flex; align-items: center; gap: 18px; margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--border); }
+.expected-goals strong { color: var(--team-color); font: 600 38px Manrope, sans-serif; font-variant-numeric: tabular-nums; }
+.expected-goals span { font-size: 12px; line-height: 1.8; }
+.expected-goals small { color: var(--muted); font-size: 10px; }
+.outcome-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 30px 0 26px; }
+.outcome-card { padding: 20px; border: 1px solid var(--border); border-top: 2px solid var(--outcome-color); border-radius: 7px; min-width: 0; }
+.outcome-a { --outcome-color: #8cdbaf; }
+.outcome-b { --outcome-color: #8fbaff; }
+.outcome-draw { --outcome-color: #b0b9c3; }
+.outcome-card h3 { font-size: 12px; }
+.outcome-card strong { display: block; font: 600 clamp(25px, 3vw, 40px) Manrope, sans-serif; color: var(--outcome-color); margin: 12px 0; font-variant-numeric: tabular-nums; }
+.outcome-card p { font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+.probability-bar { display: flex; width: 100%; height: 20px; border-radius: 4px; overflow: hidden; background: #26333e; }
+.probability-bar span { display: block; background: var(--outcome-color); flex-shrink: 0; }
+.probability-scale { display: flex; justify-content: space-between; margin: 10px 0 18px; color: var(--muted); font-size: 10px; }
+.simulation-detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 24px; }
+.simulation-detail-grid .muted { margin-top: 14px; }
+.scoreline-table { width: 100%; border-collapse: collapse; margin: 22px 0; text-align: left; }
+.scoreline-table caption { color: var(--muted); text-align: left; font-size: 11px; padding-bottom: 18px; }
+.scoreline-table th, .scoreline-table td { padding: 15px 0; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+.scoreline-table thead th { font-size: 11px; color: var(--muted); font-weight: 400; }
+.scoreline-table td, .scoreline-table thead th:last-child { text-align: right; }
+.scoreline-table tbody th { font-size: 24px; font-weight: 500; }
+.scoreline-table td { font-size: 14px; }
+.score-separator { color: var(--muted); padding: 0 16px; }
+.average-score { border-top: 1px solid var(--border); padding-top: 24px; margin-top: 22px; }
+.average-score h3 { font-size: 12px; color: var(--muted); }
+.average-score strong { font: 600 26px Manrope, sans-serif; display: block; margin: 14px 0; }
+.average-score p { font-size: 12px; color: var(--muted); }
+@media (max-width: 950px) { .simulation-detail-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 650px) {
+  .outcome-cards { gap: 8px; }
+  .outcome-card { padding: 14px 9px; }
+  .outcome-card h3 { font-size: 10px; }
+  .outcome-card strong { font-size: 23px; }
+  .outcome-card p { font-size: 10px; }
+  .simulation-results .panel { padding: 20px 16px; }
+  .simulation-results .section-heading { align-items: flex-start; flex-direction: column; }
+}
