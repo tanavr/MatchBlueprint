@@ -44,7 +44,15 @@ def create_app(provider: Optional[FootballDataProvider] = None,
     application.state.football_service = FootballService(provider, coverage or (), prepared_profiles=prepared_profiles)
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+        allow_origins=[
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            *[
+                origin.strip()
+                for origin in os.environ.get("FRONTEND_ORIGINS", "").split(",")
+                if origin.strip()
+            ],
+        ],
         allow_credentials=False, allow_methods=["GET"], allow_headers=["Content-Type"],
     )
     register_errors(application)
