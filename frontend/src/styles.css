@@ -344,20 +344,7 @@ select:disabled {
   font-size:13px;
 }
 
-.empty-features {
-  display:flex;
-  gap:26px;
-  justify-content:center;
-  margin-top:32px;
-  color:#91a2b0;
-  font-size:10px;
-}
 
-.empty-features span+span:before {
-  content:'·';
-  margin-right:26px;
-  color:#577866;
-}
 
 .empty-symbol {
   height:44px;
@@ -812,13 +799,6 @@ footer {
     align-items:start;
     flex-direction:column;
   }
-  .empty-features {
-    gap:12px;
-    flex-wrap:wrap;
-  }
-  .empty-features span+span:before {
-    display:none;
-  }
   footer {
     padding:22px;
   }
@@ -852,10 +832,6 @@ footer {
   }
   .empty-panel h2 {
     font-size:22px;
-  }
-  .empty-features {
-    display:grid;
-    gap:10px;
   }
   .identity-card {
     padding:24px;
@@ -948,9 +924,6 @@ footer {
 .radar-tooltip small { display: block; color: var(--muted); margin-top: 8px; }
 .color-a { color: #8cdbaf; }
 .color-b { color: #8fbaff; }
-.radar-unavailable { min-height: 330px; display: flex; flex-direction: column; justify-content: center; padding: 24px 0; }
-.radar-unavailable h3 { font-size: 20px; }
-.radar-unavailable p { color: var(--muted); font-size: 13px; margin-top: 16px; }
 .difference-panel > .muted { margin-top: 16px; line-height: 1.8; }
 .difference-group { margin-top: 30px; }
 .difference-group h3 { font-size: 11px; letter-spacing: 1px; color: var(--team-color); text-transform: uppercase; margin-bottom: 12px; }
