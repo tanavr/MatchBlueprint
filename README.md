@@ -14,16 +14,6 @@ MatchBlueprint turns football match events into season-level statistics, interpr
 - **Match simulation:** estimated goals, win/draw/loss probabilities and likely scorelines from an analytical Poisson model.
 - **Reproducible data preparation:** replaceable providers, local caching, source hashes, coverage checks and prepared metric snapshots. API requests do not download or reprocess raw event files.
 
-## Screenshots
-
-Screenshots will be added for these views:
-
-| View | What it shows |
-| --- | --- |
-| Analyze | Team statistics, tactical identity and dimension scores |
-| Compare | Side-by-side styles, comparison chart and metric tables |
-| Simulate | Expected goals, outcome probabilities and likely scorelines |
-
 ## Architecture
 
 ```text
