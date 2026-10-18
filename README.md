@@ -1,5 +1,7 @@
 # MatchBlueprint
 
+**[Live Demo](https://match-blueprint-chi.vercel.app/)**
+
 MatchBlueprint turns football match events into season-level statistics, interpretable tactical profiles, and probabilistic matchup estimates. Its Python analytics engine powers a React dashboard for exploring how teams play and comparing their styles.
 
 **Current demo:** men's Premier League 2015/16 — 20 clubs, 380 matches, and 38 matches per club, using StatsBomb Open Data. Additional seasons require preparation; the demo does not currently offer other seasons or live scores.
